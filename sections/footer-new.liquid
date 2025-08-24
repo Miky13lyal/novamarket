@@ -1,0 +1,159 @@
+{%- style -%}
+  /* Import des styles personnalisés */
+  {{ 'footer-styles.css' | asset_url | stylesheet_tag }}
+{%- endstyle -%}
+
+<footer class="footer" role="contentinfo">
+  <div class="footer__content">
+    <!-- Grille principale du footer -->
+    <div class="footer__grid">
+      <!-- Colonne 1: À propos -->
+      <div class="footer__column">
+        <h3>À propos</h3>
+        <p>Notre engagement est de fournir des produits de qualité supérieure avec un service client exceptionnel.</p>
+        <div class="footer__social">
+          {% if settings.social_facebook_link != blank %}
+            <a href="{{ settings.social_facebook_link }}" target="_blank" rel="noopener">
+              {% render 'icon-facebook' %}
+            </a>
+          {% endif %}
+          {% if settings.social_instagram_link != blank %}
+            <a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener">
+              {% render 'icon-instagram' %}
+            </a>
+          {% endif %}
+          {% if settings.social_twitter_link != blank %}
+            <a href="{{ settings.social_twitter_link }}" target="_blank" rel="noopener">
+              {% render 'icon-twitter' %}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Colonne 2: Liens rapides -->
+      <div class="footer__column">
+        <h3>Liens rapides</h3>
+        <ul class="footer__menu">
+          {% for link in linklists.footer.links %}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Colonne 3: Informations -->
+      <div class="footer__column">
+        <h3>Informations</h3>
+        <ul class="footer__menu">
+          <li><a href="/pages/mentions-legales">Mentions légales</a></li>
+          <li><a href="/pages/conditions-generales-de-vente">CGV</a></li>
+          <li><a href="/pages/politique-de-confidentialite">Confidentialité</a></li>
+          <li><a href="/pages/retours-remboursements">Retours & Remboursements</a></li>
+        </ul>
+      </div>
+
+      <!-- Colonne 4: Newsletter -->
+      <div class="footer__column">
+        <div class="footer__newsletter">
+          <h3>Newsletter</h3>
+          <p>Inscrivez-vous pour recevoir nos offres exclusives.</p>
+          {% form 'customer', class: 'footer__newsletter-form' %}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <input 
+              type="email" 
+              name="contact[email]" 
+              class="footer__newsletter-input" 
+              placeholder="Votre adresse email" 
+              required
+            >
+            <button type="submit" class="footer__newsletter-button">
+              S'inscrire
+            </button>
+          {% endform %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Barre inférieure -->
+    <div class="footer__bottom">
+      <div class="footer__copyright">
+        &copy; {{ 'now' | date: "%Y" }} {{ shop.name }}. Tous droits réservés.
+      </div>
+      
+      <div class="footer__payment">
+        {% for type in shop.enabled_payment_types %}
+          <div class="footer__payment-item">
+            {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Pied de page moderne",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Paramètres généraux"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Couleur de fond",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Couleur du texte",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Couleur des liens",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_color",
+      "label": "Couleur des liens au survol",
+      "default": "#4a90e2"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Couleur d'accent",
+      "default": "#4a90e2"
+    },
+    {
+      "type": "header",
+      "content": "Newsletter"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Titre de la newsletter",
+      "default": "Newsletter"
+    },
+    {
+      "type": "textarea",
+      "id": "newsletter_text",
+      "label": "Texte de la newsletter",
+      "default": "Inscrivez-vous pour recevoir nos offres exclusives."
+    },
+    {
+      "type": "header",
+      "content": "Mentions légales"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Texte de copyright",
+      "default": "© 2023 Votre Boutique. Tous droits réservés."
+    }
+  ]
+}
+{% endschema %}

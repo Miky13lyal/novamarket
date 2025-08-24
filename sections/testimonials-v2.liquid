@@ -1,0 +1,440 @@
+{{ 'component-testimonials-v2.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .testimonials-v2-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .testimonials-v2-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .testimonials-v2-{{ section.id }} .testimonials-v2__heading {
+    text-align: {{ section.settings.heading_alignment }};
+    margin-bottom: {{ section.settings.heading_spacing }}px;
+  }
+
+  .testimonials-v2-{{ section.id }} .testimonials-v2__subheading {
+    text-align: {{ section.settings.heading_alignment }};
+    max-width: {{ section.settings.content_width }}%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: {{ section.settings.subheading_spacing }}px;
+  }
+
+  .testimonials-v2-{{ section.id }} .testimonials-v2__container {
+    --testimonial-gap: {{ section.settings.gap }}px;
+  }
+
+  .testimonials-v2-{{ section.id }} .testimonial-v2__card {
+    background: {{ section.settings.card_background }};
+    border: 1px solid {{ section.settings.card_border | default: 'transparent' }};
+  }
+
+  .testimonials-v2-{{ section.id }} .testimonial-v2__content {
+    color: {{ section.settings.text_color }};
+  }
+
+  .testimonials-v2-{{ section.id }} .testimonial-v2__author {
+    color: {{ section.settings.author_color }};
+  }
+
+  .testimonials-v2-{{ section.id }} .testimonial-v2__position {
+    color: {{ section.settings.position_color }};
+  }
+{%- endstyle -%}
+
+<div class="testimonials-v2 testimonials-v2-{{ section.id }} color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="testimonials-v2__heading {{ section.settings.heading_size }}">
+        {{ section.settings.heading | escape }}
+      </h2>
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      <div class="testimonials-v2__subheading rte">
+        {{ section.settings.subheading }}
+      </div>
+    {%- endif -%}
+
+    <div class="testimonials-v2__container" data-testimonials-slider>
+      <div class="testimonials-v2__track" data-slider-track>
+        {%- for block in section.blocks -%}
+          <div class="testimonial-v2__slide" {{ block.shopify_attributes }} data-slide-index="{{ forloop.index0 }}">
+            <div class="testimonial-v2__card">
+              {%- if block.settings.stars > 0 -%}
+                <div class="testimonial-v2__stars" style="--rating: {{ block.settings.stars }};">
+                  {%- for i in (1..5) -%}
+                    <span class="testimonial-v2__star">
+                      {%- if i <= block.settings.stars -%}
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M10 1L12.7522 7.60081L20 8.50685L14.761 13.5242L16.1045 20L10 16.8008L3.89549 20L5.23904 13.5242L0 8.50685L7.24776 7.60081L10 1Z" fill="currentColor"/>
+                        </svg>
+                      {%- else -%}
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M10 1L12.7522 7.60081L20 8.50685L14.761 13.5242L16.1045 20L10 16.8008L3.89549 20L5.23904 13.5242L0 8.50685L7.24776 7.60081L10 1Z" fill="#E5E5E5"/>
+                        </svg>
+                      {%- endif -%}
+                    </span>
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+              
+              {%- if block.settings.testimonial != blank -%}
+                <div class="testimonial-v2__content">
+                  {{ block.settings.testimonial }}
+                </div>
+              {%- endif -%}
+              
+              <div class="testimonial-v2__author-info">
+                {%- if block.settings.image != blank -%}
+                  <div class="testimonial-v2__avatar">
+                    {{ block.settings.image | image_url: width: 80 | image_tag:
+                      loading: 'lazy',
+                      width: 80,
+                      height: 80,
+                      class: 'motion-reduce',
+                      alt: block.settings.author | escape
+                    }}
+                  </div>
+                {%- endif -%}
+                
+                <div class="testimonial-v2__author-details">
+                  {%- if block.settings.author != blank -%}
+                    <div class="testimonial-v2__author">{{ block.settings.author | escape }}</div>
+                  {%- endif -%}
+                  
+                  {%- if block.settings.position != blank -%}
+                    <div class="testimonial-v2__position">{{ block.settings.position | escape }}</div>
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- if section.settings.show_navigation and section.blocks.size > 1 -%}
+        <div class="testimonials-v2__navigation">
+          <button type="button" class="testimonials-v2__button testimonials-v2__button--prev" aria-label="{{ 'sections.testimonials.previous' | t }}">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          
+          <div class="testimonials-v2__pagination">
+            {%- for block in section.blocks -%}
+              <button type="button" class="testimonials-v2__pagination-dot{% if forloop.first %} active{% endif %}" aria-label="{{ 'sections.testimonials.go_to_slide' | t: number: forloop.index }}" data-slide-index="{{ forloop.index0 }}"></button>
+            {%- endfor -%}
+          </div>
+          
+          <button type="button" class="testimonials-v2__button testimonials-v2__button--next" aria-label="{{ 'sections.testimonials.next' | t }}">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Témoignages V2",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "En-tête"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Ce que disent nos clients",
+      "label": "Titre"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Petit"
+        },
+        {
+          "value": "h1",
+          "label": "Moyen"
+        },
+        {
+          "value": "h0",
+          "label": "Grand"
+        }
+      ],
+      "default": "h1",
+      "label": "Taille du titre"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "default": "<p>Découvrez les avis de nos clients satisfaits</p>",
+      "label": "Sous-titre"
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Largeur du contenu",
+      "default": 70
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Alignement du texte",
+      "options": [
+        {
+          "value": "left",
+          "label": "Gauche"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Droite"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Espacement après le titre",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "subheading_spacing",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Espacement après le sous-titre",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Disposition",
+      "options": [
+        {
+          "value": "slider",
+          "label": "Diaporama"
+        },
+        {
+          "value": "grid",
+          "label": "Grille"
+        }
+      ],
+      "default": "slider"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3,
+      "label": "Nombre de colonnes sur ordinateur"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "default": true,
+      "label": "Afficher la navigation"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "default": true,
+      "label": "Défilement automatique"
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 2000,
+      "max": 8000,
+      "step": 500,
+      "unit": "ms",
+      "label": "Vitesse de défilement automatique",
+      "default": 5000
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Espacement entre les témoignages",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Schéma de couleurs",
+      "default": "background-1"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Arrière-plan des cartes",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_border",
+      "label": "Bordure des cartes",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Couleur du texte",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "author_color",
+      "label": "Couleur du nom de l'auteur",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "position_color",
+      "label": "Couleur du poste/de la position",
+      "default": "#6b7280"
+    },
+    {
+      "type": "header",
+      "content": "Espacement"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Marge supérieure",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Marge inférieure",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Témoignage",
+      "settings": [
+        {
+          "type": "range",
+          "id": "stars",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "label": "Étoiles",
+          "default": 5
+        },
+        {
+          "type": "richtext",
+          "id": "testimonial",
+          "label": "Témoignage",
+          "default": "<p>Ce produit a dépassé toutes mes attentes. La qualité est exceptionnelle et le service client est incroyable. Je recommande vivement !</p>"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Photo de l'auteur"
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Nom de l'auteur",
+          "default": "Jean Dupont"
+        },
+        {
+          "type": "text",
+          "id": "position",
+          "label": "Poste/Position",
+          "default": "Client satisfait"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Témoignages V2",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "stars": 5,
+            "testimonial": "<p>Ce produit a dépassé toutes mes attentes. La qualité est exceptionnelle et le service client est incroyable. Je recommande vivement !</p>",
+            "author": "Marie Martin",
+            "position": "Cliente satisfaite"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "stars": 4,
+            "testimonial": "<p>Livraison rapide et produit de grande qualité. Je suis très satisfait de mon achat et je reviendrai certainement.</p>",
+            "author": "Pierre Dubois",
+            "position": "Client régulier"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "stars": 5,
+            "testimonial": "<p>Un excellent service client qui a su répondre à toutes mes questions. Les produits sont de très bonne qualité.</p>",
+            "author": "Sophie Leroy",
+            "position": "Nouvelle cliente"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

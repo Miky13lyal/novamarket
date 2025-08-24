@@ -1,0 +1,46 @@
+<div class="mosaic-product-card">
+  <a href="{{ product.url }}" class="mosaic-product-card__media">
+    {%- if product.featured_media -%}
+      {{ product.featured_media | image_url: width: 800 | image_tag: 
+        loading: 'lazy',
+        width: product.featured_media.width,
+        height: product.featured_media.height,
+        class: 'mosaic-product-card__image',
+        alt: product.featured_media.alt | escape
+      }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'mosaic-product-card__image placeholder-svg' }}
+    {%- endif -%}
+  </a>
+  
+  <div class="mosaic-product-card__content">
+    {%- if show_vendor and product.vendor -%}
+      <div class="mosaic-product-card__vendor">{{ product.vendor }}</div>
+    {%- endif -%}
+    
+    <h3 class="mosaic-product-card__title">
+      <a href="{{ product.url }}" class="full-unstyled-link">
+        {{ product.title | escape }}
+      </a>
+    </h3>
+    
+    <div class="mosaic-product-card__price">
+      {%- if product.compare_at_price > product.price -%}
+        <span class="mosaic-product-card__price--compare">
+          {{ product.compare_at_price | money }}
+        </span>
+        <span class="mosaic-product-card__price--sale">
+          {{ product.price | money }}
+        </span>
+      {%- else -%}
+        {{ product.price | money }}
+      {%- endif -%}
+      
+      {%- if product.available == false -%}
+        <span class="badge badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
+      {%- elsif product.compare_at_price > product.price and product.available -%}
+        <span class="badge badge--sale">{{ 'products.product.on_sale' | t }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+</div>

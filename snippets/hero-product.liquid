@@ -1,0 +1,451 @@
+<div class="hero-product" data-section-id="{{ section.id }}" data-section-type="hero-product">
+  <div class="hero-product__container page-width">
+    <!-- Colonne de gauche : Images du produit -->
+    <div class="hero-product__gallery">
+      <div class="gallery-main">
+        {% if product.featured_media %}
+          <div class="gallery-main__item">
+            {{ product.featured_media | image_url: width: 1000 | image_tag:
+              loading: 'lazy',
+              class: 'hero-product__image',
+              alt: product.featured_media.alt | escape
+            }}
+          </div>
+        {% endif %}
+      </div>
+      
+      <div class="gallery-thumbnails">
+        {% for media in product.media limit: 4 %}
+          <div class="gallery-thumbnail {% if forloop.first %}is-active{% endif %}" data-index="{{ forloop.index0 }}">
+            {{ media | image_url: width: 150 | image_tag:
+              loading: 'lazy',
+              class: 'hero-product__thumbnail',
+              alt: media.alt | escape
+            }}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Colonne de droite : Détails du produit -->
+    <div class="hero-product__details">
+      {% if section.settings.show_badge %}
+        <span class="product-badge">{{ section.settings.badge_text }}</span>
+      {% endif %}
+
+      <h1 class="hero-product__title">{{ product.title }}</h1>
+      
+      <div class="product-price">
+        <span class="price--sale">{{ product.selected_or_first_available_variant.price | money }}</span>
+        {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}
+          <span class="price--compare">{{ product.selected_or_first_available_variant.compare_at_price | money }}</span>
+          <span class="savings">
+            Économisez {{ product.selected_or_first_available_variant.compare_at_price | minus: product.selected_or_first_available_variant.price | times: 100.0 | divided_by: product.selected_or_first_available_variant.compare_at_price | round }}%
+          </span>
+        {% endif %}
+      </div>
+
+      {% if section.settings.show_reviews %}
+        <div class="product-reviews">
+          <div class="star-rating">
+            {% for i in (1..5) %}
+              <span class="star">★</span>
+            {% endfor %}
+          </div>
+          <a href="#reviews" class="review-count">({{ 'products.product.reviews_link' | t: count: product.metafields.reviews.rating_count }})</a>
+        </div>
+      {% endif %}
+
+      <div class="product-variants">
+        {% for option in product.options_with_values %}
+          <div class="selector-wrapper">
+            <label for="Option-{{ section.id }}-{{ forloop.index0 }}">
+              {{ option.name }}
+            </label>
+            <select
+              id="Option-{{ section.id }}-{{ forloop.index0 }}"
+              class="select__select"
+              name="options[{{ option.name | escape }}]"
+              form="product-form-{{ section.id }}"
+            >
+              {% for value in option.values %}
+                <option
+                  value="{{ value | escape }}"
+                  {% if option.selected_value == value %}selected="selected"{% endif %}
+                >
+                  {{ value }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="product-actions">
+        <div class="quantity-selector">
+          <button type="button" class="quantity-button minus">-</button>
+          <input type="number" id="Quantity-{{ section.id }}" name="quantity" value="1" min="1" class="quantity-input">
+          <button type="button" class="quantity-button plus">+</button>
+        </div>
+        
+        <button type="submit" name="add" class="add-to-cart-button">
+          <span>Ajouter au panier</span>
+          <span class="button-price">{{ product.selected_or_first_available_variant.price | money }}</span>
+        </button>
+      </div>
+
+      {% if section.settings.show_stock %}
+        <div class="stock-counter">
+          <div class="stock-progress">
+            <div class="progress-bar" style="width: 75%"></div>
+          </div>
+          <p>Plus que {{ product.selected_or_first_available_variant.inventory_quantity }} en stock</p>
+        </div>
+      {% endif %}
+
+      <div class="trust-badges">
+        <div class="trust-badge">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Paiement sécurisé</span>
+        </div>
+        <div class="trust-badge">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 8V12L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Livraison rapide</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<style>
+  .hero-product {
+    padding: 4rem 0;
+    background: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  .hero-product__container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: flex-start;
+  }
+
+  .hero-product__gallery {
+    position: sticky;
+    top: 2rem;
+  }
+
+  .gallery-main {
+    margin-bottom: 1rem;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .gallery-thumbnails {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .gallery-thumbnail {
+    width: 80px;
+    height: 80px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+  }
+
+  .gallery-thumbnail.is-active,
+  .gallery-thumbnail:hover {
+    border-color: var(--color-primary);
+  }
+
+  .product-badge {
+    display: inline-block;
+    background: var(--color-primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+    animation: pulse 2s infinite;
+  }
+
+  .hero-product__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 1.5rem 0;
+    line-height: 1.2;
+  }
+
+  .product-price {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .price--sale {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .price--compare {
+    text-decoration: line-through;
+    opacity: 0.7;
+  }
+
+  .savings {
+    background: #fef3f2;
+    color: #b91c1c;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .product-reviews {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .star-rating {
+    color: #f59e0b;
+  }
+
+  .review-count {
+    color: var(--color-foreground);
+    text-decoration: none;
+    font-size: 0.875rem;
+  }
+
+  .product-variants {
+    margin-bottom: 2rem;
+  }
+
+  .selector-wrapper {
+    margin-bottom: 1rem;
+  }
+
+  .select__select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .product-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .quantity-selector {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .quantity-button {
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: var(--color-foreground);
+  }
+
+  .quantity-input {
+    width: 3rem;
+    height: 3rem;
+    text-align: center;
+    border: none;
+    border-left: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
+    background: none;
+    color: var(--color-foreground);
+    -moz-appearance: textfield;
+  }
+
+  .quantity-input::-webkit-outer-spin-button,
+  .quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .add-to-cart-button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    height: 3rem;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .add-to-cart-button:hover {
+    background: var(--color-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .button-price {
+    opacity: 0.9;
+    font-weight: 500;
+  }
+
+  .stock-counter {
+    margin-bottom: 2rem;
+  }
+
+  .stock-progress {
+    height: 6px;
+    background: #e5e7eb;
+    border-radius: 3px;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: var(--color-primary);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  .stock-counter p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+  }
+
+  .trust-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .trust-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+  }
+
+  .trust-badge svg {
+    color: var(--color-primary);
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @media (max-width: 991px) {
+    .hero-product__container {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .hero-product__gallery {
+      position: static;
+    }
+
+    .hero-product__title {
+      font-size: 2rem;
+    }
+  }
+
+  @media (max-width: 479px) {
+    .product-actions {
+      flex-direction: column;
+    }
+
+    .add-to-cart-button {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Gestion des miniatures
+    const thumbnails = document.querySelectorAll('.gallery-thumbnail');
+    const mainImage = document.querySelector('.gallery-main__item');
+    
+    thumbnails.forEach(thumbnail => {
+      thumbnail.addEventListener('click', function() {
+        // Retirer la classe active de toutes les miniatures
+        thumbnails.forEach(t => t.classList.remove('is-active'));
+        // Ajouter la classe active à la miniature cliquée
+        this.classList.add('is-active');
+        
+        // Mettre à jour l'image principale (simplifié pour l'exemple)
+        // Dans une implémentation réelle, vous voudriez peut-être charger une image de meilleure qualité
+        const newSrc = this.querySelector('img').src.replace('_150x', '_1000x');
+        mainImage.querySelector('img').src = newSrc;
+      });
+    });
+
+    // Gestion du sélecteur de quantité
+    const minusButton = document.querySelector('.quantity-button.minus');
+    const plusButton = document.querySelector('.quantity-button.plus');
+    const quantityInput = document.querySelector('.quantity-input');
+    
+    if (minusButton && plusButton && quantityInput) {
+      minusButton.addEventListener('click', function() {
+        let value = parseInt(quantityInput.value);
+        if (value > 1) {
+          quantityInput.value = value - 1;
+        }
+      });
+      
+      plusButton.addEventListener('click', function() {
+        let value = parseInt(quantityInput.value);
+        quantityInput.value = value + 1;
+      });
+    }
+  });
+</script>

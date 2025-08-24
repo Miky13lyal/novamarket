@@ -1,0 +1,488 @@
+{{ 'section-fullscreen-banner.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .fullscreen-banner-{{ section.id }} {
+    --overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    --overlay-color: {{ section.settings.overlay_color.rgb }};
+    --content-color: {{ section.settings.content_color }};
+    --content-max-width: {{ section.settings.content_width }}%;
+    --content-alignment: {{ section.settings.content_alignment }};
+    --content-vertical-alignment: {{ section.settings.content_vertical_alignment }};
+    --text-alignment: {{ section.settings.text_alignment }};
+    --button-spacing: {{ section.settings.button_spacing }}px;
+    --button-1-background: {{ section.settings.button_1_background.rgb }};
+    --button-1-text: {{ section.settings.button_1_text_color }};
+    --button-2-background: {{ section.settings.button_2_background.rgb }};
+    --button-2-text: {{ section.settings.button_2_text_color }};
+    --section-height: {{ section.settings.section_height }}vh;
+    --section-min-height: {{ section.settings.min_height }}px;
+    
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .fullscreen-banner-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="fullscreen-banner fullscreen-banner-{{ section.id }} color-{{ section.settings.color_scheme }} gradient">
+  <div class="fullscreen-banner__media">
+    {%- if section.settings.video != blank -%}
+      {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, controls: false, class: 'fullscreen-banner__video' }}
+    {%- elsif section.settings.image != blank -%}
+      {{ section.settings.image | image_url: width: 3000 | image_tag:
+        loading: 'lazy',
+        width: section.settings.image.width,
+        height: section.settings.image.height,
+        sizes: '100vw',
+        widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000',
+        alt: section.settings.image.alt | escape,
+        class: 'fullscreen-banner__image'
+      }}
+    {%- else -%}
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg fullscreen-banner__image' }}
+    {%- endif -%}
+    
+    <div class="fullscreen-banner__overlay"></div>
+  </div>
+  
+  <div class="fullscreen-banner__content page-width">
+    <div class="fullscreen-banner__content-inner">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'subheading' -%}
+            {%- if block.settings.text != blank -%}
+              <p class="fullscreen-banner__subheading" {{ block.shopify_attributes }}>
+                {{ block.settings.text | escape }}
+              </p>
+            {%- endif -%}
+            
+          {%- when 'heading' -%}
+            {%- if block.settings.heading != blank -%}
+              <h2 class="fullscreen-banner__heading {{ block.settings.heading_size }}" {{ block.shopify_attributes }}>
+                {{ block.settings.heading | escape }}
+              </h2>
+            {%- endif -%}
+            
+          {%- when 'text' -%}
+            {%- if block.settings.text != blank -%}
+              <div class="fullscreen-banner__text rte" {{ block.shopify_attributes }}>
+                {{ block.settings.text }}
+              </div>
+            {%- endif -%}
+            
+          {%- when 'buttons' -%}
+            {%- if block.settings.button_label_1 != blank or block.settings.button_label_2 != blank -%}
+              <div class="fullscreen-banner__buttons" {{ block.shopify_attributes }}>
+                {%- if block.settings.button_label_1 != blank -%}
+                  <a href="{{ block.settings.button_link_1 | default: '#' }}" class="button button--primary">
+                    {{ block.settings.button_label_1 | escape }}
+                  </a>
+                {%- endif -%}
+                
+                {%- if block.settings.button_label_2 != blank -%}
+                  <a href="{{ block.settings.button_link_2 | default: '#' }}" class="button button--secondary">
+                    {{ block.settings.button_label_2 | escape }}
+                  </a>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+            
+          {%- when 'countdown' -%}
+            {%- if block.settings.date != blank -%}
+              <div class="fullscreen-banner__countdown" data-countdown-date="{{ block.settings.date }}" {{ block.shopify_attributes }}>
+                <div class="countdown__item">
+                  <span class="countdown__number" data-days>00</span>
+                  <span class="countdown__label">Jours</span>
+                </div>
+                <div class="countdown__item">
+                  <span class="countdown__number" data-hours>00</span>
+                  <span class="countdown__label">Heures</span>
+                </div>
+                <div class="countdown__item">
+                  <span class="countdown__number" data-minutes>00</span>
+                  <span class="countdown__label">Minutes</span>
+                </div>
+                <div class="countdown__item">
+                  <span class="countdown__number" data-seconds>00</span>
+                  <span class="countdown__label">Secondes</span>
+                </div>
+              </div>
+            {%- endif -%}
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+  
+  {%- if section.settings.show_scroll_indicator -%}
+    <div class="fullscreen-banner__scroll-indicator">
+      <span class="fullscreen-banner__scroll-text">Défiler</span>
+      <svg class="fullscreen-banner__scroll-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 5V19M12 19L5 12M12 19L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Bannière plein écran",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Médias"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Vidéo",
+      "info": "La vidéo remplacera l'image si les deux sont sélectionnées"
+    },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "range",
+      "id": "section_height",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Hauteur de la section",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "min_height",
+      "min": 300,
+      "max": 1000,
+      "step": 50,
+      "unit": "px",
+      "label": "Hauteur minimale",
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Largeur du contenu",
+      "default": 80
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Alignement horizontal",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Gauche"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "flex-end",
+          "label": "Droite"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "content_vertical_alignment",
+      "label": "Alignement vertical",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Haut"
+        },
+        {
+          "value": "center",
+          "label": "Milieu"
+        },
+        {
+          "value": "flex-end",
+          "label": "Bas"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Alignement du texte",
+      "options": [
+        {
+          "value": "left",
+          "label": "Gauche"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Droite"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "button_spacing",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Espacement entre les boutons",
+      "default": 15
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_indicator",
+      "default": true,
+      "label": "Afficher l'indicateur de défilement"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Schéma de couleurs",
+      "default": "background-1"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Couleur de l'overlay",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Opacité de l'overlay",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "content_color",
+      "label": "Couleur du contenu",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_1_background",
+      "label": "Couleur du bouton principal",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_1_text_color",
+      "label": "Couleur du texte du bouton principal",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_2_background",
+      "label": "Couleur du bouton secondaire",
+      "default": "transparent"
+    },
+    {
+      "type": "color",
+      "id": "button_2_text_color",
+      "label": "Couleur du texte du bouton secondaire",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Espacement"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Marge supérieure",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Marge inférieure",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "subheading",
+      "name": "Sous-titre",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "default": "Nouvelle collection",
+          "label": "Texte"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "name": "Titre",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Titre de la bannière",
+          "label": "Titre"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "h2",
+              "label": "Petit"
+            },
+            {
+              "value": "h1",
+              "label": "Moyen"
+            },
+            {
+              "value": "h0",
+              "label": "Grand"
+            }
+          ],
+          "default": "h0",
+          "label": "Taille du titre"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Texte",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Découvrez notre nouvelle collection de produits exclusifs</p>",
+          "label": "Texte"
+        }
+      ]
+    },
+    {
+      "type": "buttons",
+      "name": "Boutons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_label_1",
+          "default": "Découvrir",
+          "label": "Label du bouton principal",
+          "info": "Laissez vide pour masquer le bouton"
+        },
+        {
+          "type": "url",
+          "id": "button_link_1",
+          "label": "Lien du bouton principal"
+        },
+        {
+          "type": "text",
+          "id": "button_label_2",
+          "default": "En savoir plus",
+          "label": "Label du bouton secondaire",
+          "info": "Laissez vide pour masquer le bouton"
+        },
+        {
+          "type": "url",
+          "id": "button_link_2",
+          "label": "Lien du bouton secondaire"
+        }
+      ]
+    },
+    {
+      "type": "countdown",
+      "name": "Compte à rebours",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "date",
+          "label": "Date de fin",
+          "info": "Format: JJ/MM/AAAA HH:MM:SS (ex: 31/12/2023 23:59:59)",
+          "default": "31/12/2023 23:59:59"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bannière plein écran",
+      "blocks": [
+        {
+          "type": "subheading",
+          "settings": {
+            "text": "Nouvelle collection"
+          }
+        },
+        {
+          "type": "heading",
+          "settings": {
+            "heading": "Été 2023",
+            "heading_size": "h0"
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "<p>Découvrez notre nouvelle collection de vêtements d'été</p>"
+          }
+        },
+        {
+          "type": "buttons",
+          "settings": {
+            "button_label_1": "Acheter maintenant",
+            "button_link_1": "shopify://collections/all",
+            "button_label_2": "En savoir plus",
+            "button_link_2": ""
+          }
+        },
+        {
+          "type": "countdown",
+          "settings": {
+            "date": "31/12/2023 23:59:59"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

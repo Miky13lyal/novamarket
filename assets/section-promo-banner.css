@@ -1,0 +1,374 @@
+/* Promo Banner Section */
+.promo-banner {
+  position: relative;
+  width: 100%;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  color: var(--content-color, #ffffff);
+}
+
+.promo-banner__media {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.promo-banner__image,
+.promo-banner__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.promo-banner__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, var(--overlay-opacity, 0.3));
+  z-index: 1;
+}
+
+.promo-banner__content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 4rem 2rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.promo-banner__content-inner {
+  max-width: var(--content-max-width, 80%);
+  margin: 0 auto;
+  background: var(--content-background, rgba(0, 0, 0, 0.5));
+  padding: 3rem;
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.promo-banner__subheading {
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin: 0 0 1rem;
+  color: currentColor;
+  opacity: 0.9;
+}
+
+.promo-banner__heading {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0 0 1.5rem;
+  color: currentColor;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.promo-banner__text {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  margin: 0 auto 2rem;
+  max-width: 700px;
+  color: currentColor;
+  opacity: 0.9;
+}
+
+.promo-banner__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.promo-banner__buttons .button--primary {
+  background-color: var(--button-1-bg, #ffffff);
+  color: var(--button-1-text, #000000);
+  border: 2px solid transparent;
+  min-width: 200px;
+  padding: 0.875rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.promo-banner__buttons .button--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.promo-banner__buttons .button--secondary {
+  background-color: var(--button-2-bg, transparent);
+  color: var(--button-2-text, #ffffff);
+  border: 2px solid currentColor;
+  min-width: 200px;
+  padding: 0.875rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.promo-banner__buttons .button--secondary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Countdown Styles */
+.promo-banner__countdown {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 2rem 0 0;
+  flex-wrap: wrap;
+}
+
+.countdown__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+}
+
+.countdown__number {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: currentColor;
+  margin-bottom: 0.25rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
+  color: currentColor;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 1199px) {
+  .promo-banner__heading {
+    font-size: 3rem;
+  }
+  
+  .promo-banner__text {
+    font-size: 1.125rem;
+  }
+  
+  .countdown__number {
+    font-size: 1.75rem;
+  }
+  
+  .countdown__item {
+    min-width: 70px;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .promo-banner__heading {
+    font-size: 2.5rem;
+  }
+  
+  .promo-banner__content-inner {
+    padding: 2.5rem;
+    max-width: 90%;
+  }
+  
+  .promo-banner__countdown {
+    gap: 1rem;
+  }
+  
+  .countdown__item {
+    min-width: 65px;
+  }
+  
+  .countdown__number {
+    font-size: 1.5rem;
+  }
+  
+  .countdown__label {
+    font-size: 0.6875rem;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .promo-banner {
+    min-height: 500px;
+  }
+  
+  .promo-banner__content {
+    padding: 3rem 1rem;
+  }
+  
+  .promo-banner__content-inner {
+    padding: 2rem 1.5rem;
+    max-width: 100%;
+  }
+  
+  .promo-banner__heading {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .promo-banner__text {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .promo-banner__subheading {
+    font-size: 0.9375rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .promo-banner__buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  
+  .promo-banner__buttons .button--primary,
+  .promo-banner__buttons .button--secondary {
+    width: 100%;
+    max-width: 280px;
+  }
+  
+  .promo-banner__countdown {
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  
+  .countdown__item {
+    min-width: 60px;
+    padding: 0.4rem 0.5rem;
+  }
+  
+  .countdown__number {
+    font-size: 1.25rem;
+  }
+  
+  .countdown__label {
+    font-size: 0.625rem;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .promo-banner__heading {
+    font-size: 1.75rem;
+  }
+  
+  .promo-banner__content-inner {
+    padding: 1.5rem 1rem;
+  }
+  
+  .promo-banner__countdown {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  
+  .countdown__item {
+    min-width: auto;
+    flex: 1;
+    padding: 0.35rem 0.25rem;
+  }
+  
+  .countdown__number {
+    font-size: 1.1rem;
+  }
+  
+  .countdown__label {
+    font-size: 0.5625rem;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .promo-banner__content-inner,
+  .promo-banner__buttons .button--primary,
+  .promo-banner__buttons .button--secondary {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .promo-banner__buttons .button--primary:hover,
+  .promo-banner__buttons .button--secondary:hover {
+    transform: none !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .promo-banner {
+    min-height: auto !important;
+    break-inside: avoid;
+  }
+  
+  .promo-banner__media,
+  .promo-banner__overlay {
+    display: none !important;
+  }
+  
+  .promo-banner__content {
+    position: static;
+    padding: 0 !important;
+    color: #000 !important;
+  }
+  
+  .promo-banner__content-inner {
+    background: transparent !important;
+    padding: 1rem 0 !important;
+    backdrop-filter: none !important;
+  }
+  
+  .promo-banner__heading,
+  .promo-banner__subheading,
+  .promo-banner__text,
+  .countdown__number,
+  .countdown__label {
+    color: #000 !important;
+    text-shadow: none !important;
+  }
+  
+  .promo-banner__buttons {
+    display: none !important;
+  }
+  
+  .promo-banner__countdown {
+    justify-content: flex-start !important;
+    gap: 1rem !important;
+  }
+  
+  .countdown__item {
+    background: transparent !important;
+    border: 1px solid #000 !important;
+    min-width: 50px !important;
+    padding: 0.25rem 0.5rem !important;
+  }
+}

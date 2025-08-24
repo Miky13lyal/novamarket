@@ -1,0 +1,48 @@
+{%- liquid
+  assign index = index | default: 1
+  assign show_image = show_image | default: true
+  assign show_date = show_date | default: true
+  assign show_author = show_author | default: false
+  assign show_comments = show_comments | default: false
+  assign show_excerpt = show_excerpt | default: true
+-%}
+
+<article class="article-card article-card--placeholder" aria-hidden="true">
+  {%- if show_image -%}
+    <div class="article-card__image-container">
+      <div class="article-card__image article-card__image--placeholder">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M4 5h16v14H4V5zm2 2v10h12V7H6zm5 2h2v2h-2V9zm0 4h2v2h-2v-2zm-4-4h2v2H7V9zm0 4h2v2H7v-2zm8 0h2v2h-2v-2zm0-4h2v2h-2V9z"/>
+        </svg>
+      </div>
+    </div>
+  {%- endif -%}
+  
+  <div class="article-card__content">
+    {%- if show_date or show_author or show_comments -%}
+      <div class="article-card__meta">
+        {%- if show_date -%}
+          <span class="article-card__meta--placeholder"></span>
+        {%- endif -%}
+        
+        {%- if show_author -%}
+          <span class="article-card__meta--placeholder"></span>
+        {%- endif -%}
+        
+        {%- if show_comments -%}
+          <span class="article-card__meta--placeholder"></span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+    
+    <h3 class="article-card__title article-card__title--placeholder"></h3>
+    
+    {%- if show_excerpt -%}
+      <div class="article-card__excerpt article-card__excerpt--placeholder"></div>
+      <div class="article-card__excerpt article-card__excerpt--placeholder"></div>
+      <div class="article-card__excerpt article-card__excerpt--placeholder"></div>
+    {%- endif -%}
+    
+    <div class="article-card__meta article-card__meta--placeholder"></div>
+  </div>
+</article>

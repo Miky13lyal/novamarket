@@ -1,0 +1,90 @@
+{%- comment -%}
+  Hero Produit Premium
+  Une section pour mettre en valeur un produit phare avec une mise en page moderne
+{%- endcomment -%}
+
+{%- liquid
+  assign product = section.settings.product
+  if section.settings.product == blank
+    # Utiliser le premier produit disponible dans la collection par défaut
+    assign product = collections.all.products.first
+  endif
+-%}
+
+{%- if product -%}
+  {% render 'hero-product', product: product, section: section %}
+{%- else -%}
+  <div class="page-width">
+    <div class="empty-state">
+      <h2>Produit non trouvé</h2>
+      <p>Veuillez sélectionner un produit dans les paramètres de la section.</p>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Hero Produit Premium",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Produit à mettre en avant"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Afficher le badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Texte du badge",
+      "default": "Nouveauté"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_reviews",
+      "label": "Afficher les avis",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stock",
+      "label": "Afficher le compteur de stock",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Schéma de couleurs",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Produit Premium",
+      "category": "Produit"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+.empty-state {
+  text-align: center;
+  padding: 4rem 0;
+}
+
+.empty-state h2 {
+  margin-bottom: 1rem;
+}
+
+.empty-state p {
+  color: var(--color-foreground);
+  opacity: 0.7;
+}
+{% endstylesheet %}

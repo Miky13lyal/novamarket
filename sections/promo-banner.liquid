@@ -1,0 +1,312 @@
+{{ 'section-promo-banner.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .promo-banner-{{ section.id }} {
+    --content-color: {{ section.settings.content_color }};
+    --content-background: {{ section.settings.content_background }};
+    --button-1-bg: {{ section.settings.button_1_background }};
+    --button-1-text: {{ section.settings.button_1_text_color }};
+    --button-2-bg: {{ section.settings.button_2_background }};
+    --button-2-text: {{ section.settings.button_2_text_color }};
+    --overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    --content-max-width: {{ section.settings.content_width }}%;
+    
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .promo-banner-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="promo-banner promo-banner-{{ section.id }} color-{{ section.settings.color_scheme }} gradient">
+  <div class="promo-banner__media">
+    {%- if section.settings.video != blank -%}
+      {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, controls: false, class: 'promo-banner__video' }}
+    {%- elsif section.settings.image != blank -%}
+      {{ section.settings.image | image_url: width: 3000 | image_tag:
+        loading: 'lazy',
+        width: section.settings.image.width,
+        height: section.settings.image.height,
+        sizes: '100vw',
+        widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000',
+        alt: section.settings.image.alt | escape,
+        class: 'promo-banner__image'
+      }}
+    {%- else -%}
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg promo-banner__image' }}
+    {%- endif -%}
+    
+    <div class="promo-banner__overlay"></div>
+  </div>
+  
+  <div class="promo-banner__content page-width">
+    <div class="promo-banner__content-inner">
+      {%- if section.settings.subheading != blank -%}
+        <p class="promo-banner__subheading">{{ section.settings.subheading | escape }}</p>
+      {%- endif -%}
+      
+      {%- if section.settings.heading != blank -%}
+        <h2 class="promo-banner__heading {{ section.settings.heading_size }}">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      
+      {%- if section.settings.text != blank -%}
+        <div class="promo-banner__text rte">{{ section.settings.text }}</div>
+      {%- endif -%}
+      
+      {%- if section.settings.show_countdown and section.settings.countdown_date != blank -%}
+        <div class="promo-banner__countdown" data-countdown-date="{{ section.settings.countdown_date }}">
+          <div class="countdown__item">
+            <span class="countdown__number" data-days>00</span>
+            <span class="countdown__label">Jours</span>
+          </div>
+          <div class="countdown__item">
+            <span class="countdown__number" data-hours>00</span>
+            <span class="countdown__label">Heures</span>
+          </div>
+          <div class="countdown__item">
+            <span class="countdown__number" data-minutes>00</span>
+            <span class="countdown__label">Minutes</span>
+          </div>
+          <div class="countdown__item">
+            <span class="countdown__number" data-seconds>00</span>
+            <span class="countdown__label">Secondes</span>
+          </div>
+        </div>
+      {%- endif -%}
+      
+      {%- if section.settings.button_label_1 != blank or section.settings.button_label_2 != blank -%}
+        <div class="promo-banner__buttons">
+          {%- if section.settings.button_label_1 != blank -%}
+            <a href="{{ section.settings.button_link_1 | default: '#' }}" class="button button--primary">
+              {{ section.settings.button_label_1 | escape }}
+            </a>
+          {%- endif -%}
+          
+          {%- if section.settings.button_label_2 != blank -%}
+            <a href="{{ section.settings.button_link_2 | default: '#' }}" class="button button--secondary">
+              {{ section.settings.button_label_2 | escape }}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Bannière promotionnelle",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Médias"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Vidéo",
+      "info": "La vidéo remplacera l'image si les deux sont sélectionnées"
+    },
+    {
+      "type": "header",
+      "content": "Contenu"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "default": "Offre spéciale",
+      "label": "Sous-titre"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Jusqu'à 50% de réduction",
+      "label": "Titre"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Petit"
+        },
+        {
+          "value": "h1",
+          "label": "Moyen"
+        },
+        {
+          "value": "h0",
+          "label": "Grand"
+        }
+      ],
+      "default": "h1",
+      "label": "Taille du titre"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "default": "<p>Profitez de nos offres spéciales pour une durée limitée</p>",
+      "label": "Texte"
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Largeur du contenu",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Compte à rebours"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_countdown",
+      "default": true,
+      "label": "Afficher le compte à rebours"
+    },
+    {
+      "type": "text",
+      "id": "countdown_date",
+      "label": "Date de fin",
+      "info": "Format: JJ/MM/AAAA HH:MM:SS (ex: 31/12/2023 23:59:59)",
+      "default": "31/12/2023 23:59:59"
+    },
+    {
+      "type": "header",
+      "content": "Boutons"
+    },
+    {
+      "type": "text",
+      "id": "button_label_1",
+      "default": "Acheter maintenant",
+      "label": "Label du bouton principal"
+    },
+    {
+      "type": "url",
+      "id": "button_link_1",
+      "label": "Lien du bouton principal"
+    },
+    {
+      "type": "text",
+      "id": "button_label_2",
+      "default": "En savoir plus",
+      "label": "Label du bouton secondaire"
+    },
+    {
+      "type": "url",
+      "id": "button_link_2",
+      "label": "Lien du bouton secondaire"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Schéma de couleurs",
+      "default": "background-1"
+    },
+    {
+      "type": "color",
+      "id": "content_color",
+      "label": "Couleur du texte",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color_background",
+      "id": "content_background",
+      "label": "Arrière-plan du contenu",
+      "default": "rgba(0, 0, 0, 0.5)"
+    },
+    {
+      "type": "color",
+      "id": "button_1_background",
+      "label": "Couleur du bouton principal",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_1_text_color",
+      "label": "Couleur du texte du bouton principal",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_2_background",
+      "label": "Couleur du bouton secondaire",
+      "default": "transparent"
+    },
+    {
+      "type": "color",
+      "id": "button_2_text_color",
+      "label": "Couleur du texte du bouton secondaire",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Opacité de l'overlay",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Espacement"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Marge supérieure",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Marge inférieure",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bannière promotionnelle",
+      "settings": {
+        "subheading": "Offre spéciale",
+        "heading": "Jusqu'à 50% de réduction",
+        "text": "<p>Profitez de nos offres spéciales pour une durée limitée</p>",
+        "button_label_1": "Acheter maintenant",
+        "button_label_2": "En savoir plus",
+        "countdown_date": "31/12/2023 23:59:59"
+      }
+    }
+  ]
+}
+{% endschema %}

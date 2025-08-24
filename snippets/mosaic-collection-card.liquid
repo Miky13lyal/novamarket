@@ -1,0 +1,27 @@
+<a href="{{ collection.url }}" class="mosaic-collection-card">
+  <div class="mosaic-collection-card__media">
+    {%- if collection.featured_image -%}
+      {{ collection.featured_image | image_url: width: 800 | image_tag: 
+        loading: 'lazy',
+        width: collection.featured_image.width,
+        height: collection.featured_image.height,
+        class: 'mosaic-collection-card__image',
+        alt: collection.featured_image.alt | escape
+      }}
+    {%- else -%}
+      {{ 'collection-1' | placeholder_svg_tag: 'mosaic-collection-card__image placeholder-svg' }}
+    {%- endif -%}
+    
+    <div class="mosaic-collection-card__overlay">
+      <h3 class="mosaic-collection-card__title">
+        {{- collection.title | escape -}}
+      </h3>
+      
+      {%- if collection.products_count > 0 -%}
+        <div class="mosaic-collection-card__count">
+          {{ 'sections.collection_list.item_count' | t: count: collection.products_count }}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</a>

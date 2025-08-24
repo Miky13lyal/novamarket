@@ -1,0 +1,330 @@
+{{ 'section-hero-video.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .hero-video-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    position: relative;
+    overflow: hidden;
+    height: {{ section.settings.section_height }}vh;
+    min-height: {{ section.settings.min_height }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .hero-video-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .hero-video-{{ section.id }} .hero__media {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .hero-video-{{ section.id }} .hero__media img,
+  .hero-video-{{ section.id }} .hero__media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-video-{{ section.id }} .hero__content {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: {{ section.settings.text_alignment }};
+    text-align: {{ section.settings.text_alignment }};
+    padding: 2rem;
+    color: {{ section.settings.text_color }};
+    max-width: {{ section.settings.content_width }}%;
+    margin: 0 auto;
+  }
+
+  .hero-video-{{ section.id }} .hero__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: {{ section.settings.overlay_color | color_modify: 'alpha', section.settings.overlay_opacity }};
+    z-index: 0;
+  }
+
+  .hero-video-{{ section.id }} .hero__buttons {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+    justify-content: {{ section.settings.button_alignment }};
+    width: 100%;
+  }
+
+  @media screen and (max-width: 749px) {
+    .hero-video-{{ section.id }} .hero__buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .hero-video-{{ section.id }} .hero__buttons > * {
+      width: 100%;
+    }
+  }
+{%- endstyle -%}
+
+<div class="hero-video hero-video-{{ section.id }} color-{{ section.settings.color_scheme }} gradient">
+  <div class="hero__media">
+    {%- if section.settings.video != blank -%}
+      {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, controls: false }}
+    {%- else -%}
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 3000 | image_tag:
+          loading: 'lazy',
+          width: section.settings.image.width,
+          height: section.settings.image.height,
+          sizes: '100vw',
+          widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000',
+          alt: section.settings.image.alt | escape
+        }}
+      {%- else -%}
+        {{ 'hero-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+  
+  <div class="hero__overlay"></div>
+  
+  <div class="page-width">
+    <div class="hero__content">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="hero__heading h0">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      
+      {%- if section.settings.text != blank -%}
+        <div class="hero__text rte">{{ section.settings.text }}</div>
+      {%- endif -%}
+      
+      {%- if section.settings.button_label_1 != blank or section.settings.button_label_2 != blank -%}
+        <div class="hero__buttons">
+          {%- if section.settings.button_label_1 != blank -%}
+            <a href="{{ section.settings.button_link_1 }}" class="button button--primary button--large">
+              {{ section.settings.button_label_1 | escape }}
+            </a>
+          {%- endif -%}
+          
+          {%- if section.settings.button_label_2 != blank -%}
+            <a href="{{ section.settings.button_link_2 }}" class="button button--secondary button--large">
+              {{ section.settings.button_label_2 | escape }}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Hero avec vidéo",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenu"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Titre principal",
+      "label": "Titre"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "default": "<p>Texte d'accompagnement qui met en valeur votre offre principale.</p>",
+      "label": "Texte"
+    },
+    {
+      "type": "header",
+      "content": "Boutons"
+    },
+    {
+      "type": "text",
+      "id": "button_label_1",
+      "default": "Bouton principal",
+      "label": "Label du bouton principal"
+    },
+    {
+      "type": "url",
+      "id": "button_link_1",
+      "label": "Lien du bouton principal"
+    },
+    {
+      "type": "text",
+      "id": "button_label_2",
+      "default": "En savoir plus",
+      "label": "Label du bouton secondaire"
+    },
+    {
+      "type": "url",
+      "id": "button_link_2",
+      "label": "Lien du bouton secondaire"
+    },
+    {
+      "type": "header",
+      "content": "Médias"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image de secours",
+      "info": "S'affiche si la vidéo ne peut pas être chargée"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Vidéo d'arrière-plan",
+      "info": "La vidéo sera automatiquement mise en boucle et en mode muet"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Gauche"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "flex-end",
+          "label": "Droite"
+        }
+      ],
+      "default": "center",
+      "label": "Alignement du texte"
+    },
+    {
+      "type": "select",
+      "id": "button_alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Gauche"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "flex-end",
+          "label": "Droite"
+        }
+      ],
+      "default": "center",
+      "label": "Alignement des boutons"
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Largeur du contenu",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "section_height",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Hauteur de la section",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "min_height",
+      "min": 300,
+      "max": 1000,
+      "step": 50,
+      "unit": "px",
+      "label": "Hauteur minimale",
+      "default": 600
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Couleur du texte",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Couleur de l'overlay",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "label": "Opacité de l'overlay",
+      "default": 0.3
+    },
+    {
+      "type": "header",
+      "content": "Espacement"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Marge supérieure",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Marge inférieure",
+      "default": 36
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Schéma de couleurs",
+      "default": "background-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero avec vidéo",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}

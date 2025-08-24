@@ -1,0 +1,100 @@
+{%- liquid
+  assign logo = block.settings.logo
+  assign link = block.settings.link | default: '#'
+  assign alt = block.settings.alt | default: logo.alt | escape
+  
+  assign logo_width = section.settings.logo_max_width
+  assign logo_opacity = section.settings.logo_opacity | divided_by: 100.0
+  assign logo_hover_opacity = section.settings.logo_hover_opacity | divided_by: 100.0
+-%}
+
+<div class="brand-card" {{ block.shopify_attributes }}>
+  <a href="{{ link }}" class="brand-card__link" {% if link == '#' %}aria-disabled="true"{% endif %}>
+    <div class="brand-card__image-container">
+      {%- if logo != blank -%}
+        {%- liquid
+          assign logo_height = logo_width | divided_by: logo.aspect_ratio | round
+          if logo_height > 150
+            assign logo_height = 150
+            assign logo_width = logo_height | times: logo.aspect_ratio | round
+          endif
+        -%}
+        {{ logo | image_url: width: 300 | image_tag:
+          loading: 'lazy',
+          width: logo_width,
+          height: logo_height,
+          class: 'brand-card__image',
+          alt: alt,
+          style: "opacity: #{logo_opacity}; max-width: #{logo_width}px; width: 100%; height: auto;"
+        }}
+      {%- else -%}
+        {{ 'logo' | placeholder_svg_tag: 'placeholder-svg brand-card__image' }}
+      {%- endif -%}
+    </div>
+  </a>
+</div>
+
+<style>
+  .brand-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 1rem;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  
+  .brand-card__link {
+    display: block;
+    text-decoration: none;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .brand-card__image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+  }
+  
+  .brand-card__image {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    transition: opacity 0.3s ease;
+  }
+  
+  /* Hover effects */
+  @media (hover: hover) {
+    .brand-card:hover {
+      transform: translateY(-4px);
+    }
+    
+    .brand-card:hover .brand-card__image {
+      opacity: var(--logo-hover-opacity) !important;
+    }
+  }
+  
+  /* Focus styles */
+  .brand-card__link:focus-visible {
+    outline: 2px solid var(--color-button);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+  
+  /* Print styles */
+  @media print {
+    .brand-card {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    
+    .brand-card__image {
+      filter: grayscale(100%) contrast(0);
+      opacity: 1 !important;
+    }
+  }
+</style>

@@ -1,0 +1,315 @@
+{{ 'component-brand-card.css' | asset_url | stylesheet_tag }}
+{{ 'section-brands-slider.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .brands-slider-{{ section.id }} {
+    --brand-logo-max-width: {{ section.settings.logo_max_width }}px;
+    --brand-logo-opacity: {{ section.settings.logo_opacity | divided_by: 100.0 }};
+    --brand-logo-hover-opacity: {{ section.settings.logo_hover_opacity | divided_by: 100.0 }};
+    --brand-logo-gap: {{ section.settings.logo_gap }}px;
+    
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brands-slider-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="brands-slider brands-slider-{{ section.id }} color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="brands-slider__heading {{ section.settings.heading_size }} text-{{ section.settings.heading_alignment }}">
+        {{ section.settings.heading | escape }}
+      </h2>
+    {%- endif -%}
+    
+    {%- if section.settings.subheading != blank -%}
+      <div class="brands-slider__subheading rte text-{{ section.settings.heading_alignment }}">
+        {{ section.settings.subheading }}
+      </div>
+    {%- endif -%}
+    
+    <div class="brands-slider__container" data-brands-slider>
+      <div class="brands-slider__track" data-brands-slider-track>
+        {%- for block in section.blocks -%}
+          <div class="brands-slider__slide" {{ block.shopify_attributes }}>
+            {% render 'brand-card', block: block, section: section %}
+          </div>
+        {%- else -%}
+          {%- for i in (1..6) -%}
+            <div class="brands-slider__slide">
+              <div class="brand-card">
+                <div class="brand-card__image-container">
+                  {{ 'logo' | placeholder_svg_tag: 'placeholder-svg brand-card__image' }}
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endfor -%}
+        
+        {%- if section.blocks.size > 0 -%}
+          {% comment %} Duplicate slides for infinite loop effect {% endcomment %}
+          {%- for block in section.blocks limit: 5 -%}
+            <div class="brands-slider__slide">
+              {% render 'brand-card', block: block, section: section %}
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+    
+    {%- if section.settings.show_view_all and section.settings.view_all_label != blank -%}
+      <div class="brands-slider__view-all text-{{ section.settings.heading_alignment }}">
+        <a href="{{ section.settings.view_all_link | default: '#' }}" class="button button--tertiary">
+          {{ section.settings.view_all_label | escape }}
+          <span class="icon-wrap">
+            <svg class="icon icon-arrow-right" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Marques partenaires",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "En-tête"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Nos marques partenaires",
+      "label": "Titre"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Petit"
+        },
+        {
+          "value": "h1",
+          "label": "Moyen"
+        },
+        {
+          "value": "h0",
+          "label": "Grand"
+        }
+      ],
+      "default": "h1",
+      "label": "Taille du titre"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Sous-titre",
+      "default": "<p>Découvrez les marques avec lesquelles nous collaborons</p>"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Alignement du texte",
+      "options": [
+        {
+          "value": "left",
+          "label": "Gauche"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Droite"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Paramètres des logos"
+    },
+    {
+      "type": "range",
+      "id": "logo_max_width",
+      "min": 80,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "label": "Largeur maximale des logos",
+      "default": 150
+    },
+    {
+      "type": "range",
+      "id": "logo_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Opacité des logos",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "logo_hover_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Opacité au survol",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "logo_gap",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Espacement entre les logos",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "slides_to_show",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "label": "Logos visibles",
+      "default": 5
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "default": true,
+      "label": "Défilement automatique"
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 1000,
+      "max": 10000,
+      "step": 500,
+      "unit": "ms",
+      "label": "Vitesse de défilement",
+      "default": 3000
+    },
+    {
+      "type": "header",
+      "content": "Bouton Voir tout"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "default": false,
+      "label": "Afficher le bouton"
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "default": "Voir toutes les marques",
+      "label": "Texte du bouton"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "Lien du bouton"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Schéma de couleurs",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Espacement"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Marge supérieure",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Marge inférieure",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Marque",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Lien"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Texte alternatif",
+          "info": "Décrivez l'image pour le référencement et l'accessibilité"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marques partenaires",
+      "blocks": [
+        {
+          "type": "brand"
+        },
+        {
+          "type": "brand"
+        },
+        {
+          "type": "brand"
+        },
+        {
+          "type": "brand"
+        },
+        {
+          "type": "brand"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

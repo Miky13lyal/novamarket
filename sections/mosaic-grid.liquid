@@ -1,0 +1,380 @@
+{{ 'section-mosaic-grid.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .mosaic-grid-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .mosaic-grid-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .mosaic-grid-{{ section.id }} .mosaic-grid__heading {
+    text-align: {{ section.settings.heading_alignment }};
+    margin-bottom: {{ section.settings.heading_spacing }}px;
+  }
+
+  .mosaic-grid-{{ section.id }} .mosaic-grid__subheading {
+    text-align: {{ section.settings.heading_alignment }};
+    max-width: {{ section.settings.content_width }}%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: {{ section.settings.subheading_spacing }}px;
+  }
+{%- endstyle -%}
+
+<div class="mosaic-grid mosaic-grid-{{ section.id }} color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="mosaic-grid__heading {{ section.settings.heading_size }}">
+        {{ section.settings.heading | escape }}
+      </h2>
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      <div class="mosaic-grid__subheading rte">
+        {{ section.settings.subheading }}
+      </div>
+    {%- endif -%}
+
+    <div class="mosaic-grid__container mosaic-grid--{{ section.settings.layout }}">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'product' -%}
+            {%- if block.settings.product != blank -%}
+              <div class="mosaic-grid__item mosaic-grid__item--product" {{ block.shopify_attributes }}>
+                {% render 'mosaic-product-card', product: block.settings.product, show_vendor: section.settings.show_vendor %}
+              </div>
+            {%- else -%}
+              <div class="mosaic-grid__item mosaic-grid__item--product" {{ block.shopify_attributes }}>
+                {% render 'mosaic-product-card-placeholder' %}
+              </div>
+            {%- endif -%}
+          
+          {%- when 'collection' -%}
+            {%- if block.settings.collection != blank -%}
+              <div class="mosaic-grid__item mosaic-grid__item--collection" {{ block.shopify_attributes }}>
+                {% render 'mosaic-collection-card', collection: block.settings.collection %}
+              </div>
+            {%- else -%}
+              <div class="mosaic-grid__item mosaic-grid__item--collection" {{ block.shopify_attributes }}>
+                {% render 'mosaic-collection-card-placeholder' %}
+              </div>
+            {%- endif -%}
+          
+          {%- when 'image' -%}
+            <div class="mosaic-grid__item mosaic-grid__item--image" {{ block.shopify_attributes }}>
+              <div class="mosaic-image-card">
+                {%- if block.settings.image != blank -%}
+                  <div class="mosaic-image-card__image media" style="padding-bottom: {{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100 }}%;">
+                    {{ block.settings.image | image_url: width: 1500 | image_tag:
+                      loading: 'lazy',
+                      sizes: '100%',
+                      widths: '375, 550, 750, 1100, 1500',
+                      class: 'motion-reduce'
+                    }}
+                  </div>
+                {%- else -%}
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+                
+                {%- if block.settings.heading != blank or block.settings.text != blank or block.settings.button_label != blank -%}
+                  <div class="mosaic-image-card__content">
+                    {%- if block.settings.heading != blank -%}
+                      <h3 class="mosaic-image-card__heading h3">{{ block.settings.heading | escape }}</h3>
+                    {%- endif -%}
+                    
+                    {%- if block.settings.text != blank -%}
+                      <div class="mosaic-image-card__text rte">{{ block.settings.text }}</div>
+                    {%- endif -%}
+                    
+                    {%- if block.settings.button_label != blank -%}
+                      <a href="{{ block.settings.button_link | default: '#' }}" class="button button--primary">
+                        {{ block.settings.button_label | escape }}
+                      </a>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.button_label != blank -%}
+      <div class="mosaic-grid__button-wrapper">
+        <a href="{{ section.settings.button_link | default: '#' }}" class="button button--primary">
+          {{ section.settings.button_label | escape }}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Grille mosaïque",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "En-tête"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Grille mosaïque",
+      "label": "Titre"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Petit"
+        },
+        {
+          "value": "h1",
+          "label": "Moyen"
+        },
+        {
+          "value": "h0",
+          "label": "Grand"
+        }
+      ],
+      "default": "h1",
+      "label": "Taille du titre"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "default": "<p>Mettez en valeur vos produits avec cette grille moderne et dynamique</p>",
+      "label": "Sous-titre"
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Largeur du contenu",
+      "default": 70
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Alignement du texte",
+      "options": [
+        {
+          "value": "left",
+          "label": "Gauche"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Droite"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Espacement après le titre",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "subheading_spacing",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Espacement après le sous-titre",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Disposition de la grille",
+      "options": [
+        {
+          "value": "masonry",
+          "label": "Mosaïque"
+        },
+        {
+          "value": "grid",
+          "label": "Grille régulière"
+        }
+      ],
+      "default": "masonry"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Espacement entre les éléments",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Bouton"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "Voir tout",
+      "label": "Label du bouton"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Lien du bouton"
+    },
+    {
+      "type": "header",
+      "content": "Produits"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": true,
+      "label": "Afficher le fournisseur"
+    },
+    {
+      "type": "header",
+      "content": "Espacement"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Marge supérieure",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Marge inférieure",
+      "default": 36
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Schéma de couleurs",
+      "default": "background-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Produit",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Produit"
+        }
+      ]
+    },
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Image avec texte",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Titre de l'image",
+          "label": "Titre"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Description de l'image avec du texte riche</p>",
+          "label": "Texte"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "default": "En savoir plus",
+          "label": "Label du bouton"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Lien du bouton"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Grille mosaïque",
+      "blocks": [
+        {
+          "type": "product"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "collection"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

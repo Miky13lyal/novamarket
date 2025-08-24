@@ -1,0 +1,40 @@
+{% render 'hero-product' %}
+
+{% schema %}
+{
+  "name": "Hero Produit",
+  "class": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Afficher le badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Texte du badge",
+      "default": "Nouveauté"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_reviews",
+      "label": "Afficher les avis",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stock",
+      "label": "Afficher le compteur de stock",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Produit",
+      "category": "Produit"
+    }
+  ]
+}
+{% endschema %}
