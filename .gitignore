@@ -1,132 +1,213 @@
-# OS generated files
+# Fichiers système
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# Editor directories and files
-.idea/
+# Fichiers d'éditeur
 .vscode/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+.idea/
+*.sublime-*
+*.code-workspace
 
-# Node modules
+# Fichiers de dépendances
 node_modules/
-
-# Build files
 .sass-cache/
-*.css.map
 *.sass.map
 *.scss.map
+*.css.map
 
-# Environment variables
+# Fichiers de logs
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+*.log
+logs/
+
+# Fichiers de configuration locale
 .env
 .env.*
 !.env.example
+*.local
 
-# Shopify files
-.shopifyignore
-config/settings_data.json
-config/settings_schema.json
-
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Local development
-.sass-cache/
-.stylelintcache
-
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# dotenv environment variables file
-.env
-
-# next.js build output
-.next/
-out/
-
-# Cache
-.cache/
-
-# Debug logs from Shopify CLI
-.shopify/
-
-# Local Netlify folder
-.netlify/
-
-# Local development
-.sass-cache/
-.stylelintcache
-
-# Build directory
+# Fichiers de build
 dist/
 build/
+.cache/
+.tmp/
+temp/
+tmp/
 
-# Dependency directories
-bower_components/
+# Fichiers de couverture de test
+coverage/
+.nyc_output/
+__snapshots__/
 
-# Optional REPL history
-.node_repl_history
+# Fichiers de test
+__tests__/
+test/
+tests/
+cypress/
 
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
+# Fichiers de package
+package-lock.json
+yarn.lock
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 .yarn-integrity
 
-# dotenv environment variables file
-.env
+# Fichiers de déploiement
+.netlify/
+.vercel/
 
-# next.js build output
-.next/
-out/
+# Fichiers de sauvegarde
+*.bak
+*.swp
+*.swo
+*~
+*#
 
-# Production
-build/
+# Fichiers temporaires
+.tmp/
+.temp/
+tmp/
+temp/
 
-# Debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Fichiers spécifiques à l'éditeur
+.project
+.settings/
 
-# Local development
-.DS_Store
+# Fichiers de configuration de build
+webpack.config.js
+rollup.config.js
+vite.config.js
+*.config.js
+*.config.ts
+
+# Fichiers de cache
+.cache/
+.parcel-cache/
+
+# Fichiers de déploiement
+.netlify/
+.vercel/
+
+# Fichiers de configuration d'IDE
+.idea/
+.vscode/
+*.code-workspace
+
+# Fichiers de configuration de formatage
+.prettierrc
+.prettierignore
+.eslintrc
+.eslintignore
+.stylelintrc
+.stylelintignore
+
+# Fichiers de dépendances locales
+bower_components/
+
+# Fichiers de déploiement temporaires
+.sass-cache/
+*.sass.map
+*.scss.map
+*.css.map
+
+# Fichiers de configuration de test
+jest.config.js
+karma.conf.js
+protractor.conf.js
+cypress.json
+
+# Fichiers de cache de dépendances
+.pnp.*
+.yarn/cache/
+
+# Fichiers de configuration de version
+.nvmrc
+.node-version
+.ruby-version
+
+# Fichiers de configuration de déploiement
+.netlify/
+.vercel/
+
+# Fichiers de configuration d'environnement
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Vercel
-.vercel
-
-# IDE
+# Fichiers de configuration spécifiques à l'éditeur
+.vscode/*
+!.vscode/extensions.json
 .idea/
-.vscode/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+*.sublime-workspace
+*.sublime-project
+
+# Fichiers de configuration de formatage de code
+.editorconfig
+.prettierrc
+.prettierignore
+.eslintrc
+.eslintignore
+.stylelintrc
+.stylelintignore
+
+# Fichiers de configuration de test
+coverage/
+.nyc_output/
+__snapshots__/
+
+# Fichiers de dépendances
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Fichiers de cache
+dist/
+build/
+.cache/
+.tmp/
+temp/
+tmp/
+
+# Fichiers de déploiement
+.netlify/
+.vercel/
+
+# Fichiers de sauvegarde
+*.bak
+*.swp
+*.swo
+*~
+*#
+
+# Fichiers temporaires
+.tmp/
+.temp/
+tmp/
+temp/
+
+# Fichiers spécifiques à l'éditeur
+.project
+.settings/
+
+# Fichiers de configuration de build
+webpack.config.js
+rollup.config.js
+vite.config.js
+*.config.js
+*.config.ts
+
+# Fichiers de cache
+.cache/
+.parcel-cache/
+
+# Fichiers de déploiement
+.netlify/
+.vercel/
